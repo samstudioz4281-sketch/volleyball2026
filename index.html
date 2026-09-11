@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Team Registration — Inter-Territorial Volleyball Tournament</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.0.4/tesseract.min.js"></script>
+<style>
+  :root{
+    --ink:#0F1B2E;
+    --ink-2:#17263F;
+    --paper:#F7F1E3;
+    --paper-line:#E4DBC4;
+    --court:#C9622C;
+    --court-light:#E3A87C;
+    --verified:#2F6F4E;
+    --verified-bg:#E4EEE8;
+    --danger:#A6432F;
+    --text-dark:#1B1B18;
+    --text-muted:#6B6357;
+    --text-light:#E9E4D8;
+    --text-light-muted:#9AA3B4;
+    --radius:2px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--ink);
+    background-image:
+      radial-gradient(circle at 15% 10%, rgba(201,98,44,0.10), transparent 40%),
+      radial-gradient(circle at 85% 90%, rgba(201,98,44,0.07), transparent 45%);
+    color:var(--text-light);
+    font-family:'Inter',sans-serif;
+    min-height:100vh;
+    padding:48px 20px 80px;
+  }
+  .wrap{max-width:640px;margin:0 auto;}
+  .masthead{
+    border-bottom:1px solid rgba(201,98,44,0.35);
+    padding-bottom:18px;
+    margin-bottom:36px;
+  }
+  .masthead .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.7rem;
+    color:var(--court-light);
+    margin:0 0 6px;
+  }
+  .masthead h1{
+    font-family:'Source Serif 4',serif;
+    font-weight:600;
+    font-size:1.5rem;
+    margin:0;
+    letter-spacing:0.2px;
+  }
+
+  .doc{
+    position:relative;
+    background:var(--paper);
+    color:var(--text-dark);
+    border-radius:var(--radius);
+    padding:36px 34px 30px;
+    box-shadow:0 30px 60px -20px rgba(0,0,0,0.55);
+  }
+  .doc::before, .doc::after,
+  .doc .corner-br, .doc .corner-bl{
+    content:"";
+    position:absolute;
+    width:22px;height:22px;
+    border:2px solid var(--court);
+  }
+  .doc::before{top:10px;left:10px;border-right:none;border-bottom:none;}
+  .doc::after{top:10px;right:10px;border-left:none;border-bottom:none;}
+  .doc .corner-br{bottom:10px;right:10px;border-left:none;border-top:none;}
+  .doc .corner-bl{bottom:10px;left:10px;border-right:none;border-top:none;}
+
+  .step-label{
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.68rem;
+    letter-spacing:0.06em;
+    color:var(--court);
+    margin:0 0 6px;
+  }
+  h2{
+    font-family:'Source Serif 4',serif;
+    font-size:1.15rem;
+    font-weight:600;
+    margin:0 0 8px;
+  }
+  h3{
+    font-family:'Inter',sans-serif;
+    font-size:0.82rem;
+    font-weight:600;
+    color:var(--text-muted);
+    margin:0 0 10px;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+  }
+  .subhead{
+    font-size:0.85rem;
+    color:var(--text-muted);
+    margin:0 0 18px;
+  }
+
+  .roster-track{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px;}
+  .roster-dot{
+    width:26px;height:26px;
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:0.68rem;
+    font-family:'JetBrains Mono',monospace;
+    border:1.5px solid var(--paper-line);
+    color:var(--text-muted);
+    background:#fff;
+  }
+  .roster-dot.done{background:var(--verified); border-color:var(--verified); color:#fff;}
+  .roster-dot.current{background:var(--court); border-color:var(--court); color:#fff;}
+
+  .roster-gallery{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-bottom:24px;
+  }
+  .roster-chip{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:20px;
+    padding:4px 10px 4px 4px;
+  }
+  .roster-chip img{
+    width:26px; height:26px;
+    border-radius:50%;
+    object-fit:cover;
+  }
+  .roster-chip .chip-photo-empty{
+    width:26px; height:26px;
+    border-radius:50%;
+    background:var(--paper-line);
+  }
+  .roster-chip span{
+    font-size:0.72rem;
+    color:var(--text-dark);
+    max-width:90px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+
+  .upload-block{margin-bottom:24px;}
+  .upload-hint{font-size:0.8rem; color:var(--text-muted); margin:0 0 10px;}
+  .upload-btn-row{display:flex; gap:10px;}
+  .upload-btn{
+    flex:1;
+    border:1.5px dashed var(--paper-line);
+    border-radius:var(--radius);
+    padding:16px 10px;
+    text-align:center;
+    cursor:pointer;
+    transition:border-color .15s ease, background .15s ease;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .upload-btn:hover{border-color:var(--court); background:rgba(201,98,44,0.06);}
+  .upload-btn span{font-size:0.82rem; color:var(--text-muted); font-weight:600;}
+  .upload-btn input{display:none;}
+
+  .doc-row{margin-bottom:10px;}
+  .doc-upload-btn{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    border:1.5px dashed var(--paper-line);
+    border-radius:var(--radius);
+    padding:12px 14px;
+    cursor:pointer;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .doc-upload-btn:hover{border-color:var(--court);}
+  .doc-upload-btn span{font-size:0.84rem; color:var(--text-muted);}
+  .doc-upload-btn input{display:none;}
+  .doc-upload-btn.filled{border-style:solid; border-color:var(--verified); background:var(--verified-bg);}
+  .doc-upload-btn.filled span{color:var(--verified);}
+  .doc-upload-btn::after{content:"Upload"; font-size:0.72rem; color:var(--court); font-weight:600;}
+  .doc-upload-btn.filled::after{content:"✓ Uploaded"; color:var(--verified);}
+  .drop{
+    border:1.5px dashed var(--paper-line);
+    border-radius:var(--radius);
+    padding:24px 18px;
+    text-align:center;
+    cursor:pointer;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .drop:hover{border-color:var(--court); background:rgba(201,98,44,0.06);}
+  .drop p{margin:6px 0 0; font-size:0.85rem; color:var(--text-muted);}
+  .drop .icon{font-size:1.4rem;}
+  .drop input{display:none;}
+  .drop.filled{border-style:solid; border-color:var(--verified); background:var(--verified-bg);}
+
+  .thumb-row{display:flex; gap:12px; margin-top:10px;}
+  .thumb-row img{
+    width:84px; height:84px; object-fit:cover;
+    border-radius:var(--radius); border:1px solid var(--paper-line);
+  }
+
+  .btn{
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+    font-size:0.85rem;
+    padding:11px 20px;
+    border-radius:var(--radius);
+    border:1px solid transparent;
+    cursor:pointer;
+    transition:transform .1s ease, opacity .15s ease;
+  }
+  .btn:active{transform:scale(0.98);}
+  .btn:disabled{opacity:0.45; cursor:not-allowed;}
+  .btn-primary{background:var(--ink); color:var(--text-light);}
+  .btn-primary:hover:not(:disabled){background:var(--ink-2);}
+  .btn-ghost{background:transparent; color:var(--text-muted); border-color:var(--paper-line);}
+  .btn-ghost:hover{color:var(--text-dark); border-color:var(--text-muted);}
+  .btn-block{width:100%;}
+  .btn-small{padding:6px 12px; font-size:0.76rem;}
+
+  .progress-row{
+    display:none; align-items:center; gap:12px; margin-top:16px;
+    font-size:0.82rem; color:var(--text-muted);
+  }
+  .progress-track{flex:1; height:4px; background:var(--paper-line); border-radius:2px; overflow:hidden;}
+  .progress-fill{height:100%; width:0%; background:var(--court); transition:width .2s ease;}
+
+  .divider{height:1px; background:var(--paper-line); margin:24px 0;}
+
+  .field{margin-bottom:16px;}
+  .field label{
+    display:flex; justify-content:space-between;
+    font-size:0.72rem; letter-spacing:0.04em; color:var(--text-muted); margin-bottom:6px;
+  }
+  .field label .flag{color:var(--danger); font-family:'JetBrains Mono',monospace; font-size:0.65rem;}
+  .field input, .field select{
+    width:100%;
+    font-family:'Inter',sans-serif;
+    font-size:0.95rem;
+    padding:10px 12px;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    background:#fff;
+    color:var(--text-dark);
+  }
+  .field input.mono{font-family:'JetBrains Mono',monospace; letter-spacing:0.03em;}
+  .field input:focus, .field select:focus{outline:2px solid var(--court); outline-offset:1px;}
+  .field .static-value{
+    padding:10px 12px;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    background:#EFE7D2;
+    color:var(--text-dark);
+    font-size:0.95rem;
+  }
+
+  .review-hint{
+    background:var(--verified-bg);
+    color:var(--verified);
+    border:1px solid rgba(47,111,78,0.25);
+    border-radius:var(--radius);
+    padding:10px 12px;
+    font-size:0.8rem;
+    margin-bottom:20px;
+    display:none;
+  }
+
+  .status{margin-top:16px; font-size:0.85rem; padding:11px 14px; border-radius:var(--radius); display:none;}
+  .status.ok{background:var(--verified-bg); color:var(--verified); display:block;}
+  .status.err{background:#F5E3DE; color:var(--danger); display:block;}
+  .status.busy{background:#EFEBDD; color:var(--text-muted); display:block;}
+
+  .complete-icon{font-size:2.2rem; margin-bottom:6px;}
+  .complete-list{font-size:0.85rem; color:var(--text-muted); line-height:1.9; margin:16px 0 24px;}
+  .complete-list b{color:var(--text-dark);}
+
+  .roster-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    padding:10px 0;
+    border-bottom:1px solid var(--paper-line);
+    font-size:0.86rem;
+  }
+  .roster-row:last-child{border-bottom:none;}
+  .roster-row .r-role{
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.7rem;
+    color:var(--court);
+    text-transform:uppercase;
+    width:90px;
+    flex-shrink:0;
+  }
+  .roster-row .r-info{flex:1; color:var(--text-dark);}
+  .roster-row .r-info span{display:block; font-size:0.74rem; color:var(--text-muted);}
+  .roster-row .r-photo{
+    width:40px; height:40px;
+    border-radius:50%;
+    object-fit:cover;
+    border:1px solid var(--paper-line);
+    flex-shrink:0;
+  }
+  .roster-row .r-photo-empty{background:var(--paper-line);}
+
+  .footnote{
+    text-align:center;
+    font-size:0.72rem;
+    color:var(--text-light-muted);
+    margin-top:28px;
+    line-height:1.6;
+  }
+
+  .org-mark{text-align:center; margin-bottom:8px;}
+  .org-logo{
+    width:64px; height:64px;
+    display:block;
+    margin:0 auto 12px;
+    object-fit:contain;
+  }
+  .logo-fallback{
+    width:64px; height:64px;
+    border-radius:50%;
+    background:var(--ink);
+    color:var(--text-light);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    margin:0 auto 12px;
+    font-family:'Source Serif 4',serif;
+    font-weight:600;
+    font-size:1.3rem;
+    letter-spacing:0.05em;
+  }
+  .org-name{
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.72rem;
+    letter-spacing:0.12em;
+    color:var(--court);
+    margin:0 0 6px;
+  }
+  .event-title{
+    font-family:'Source Serif 4',serif;
+    font-weight:600;
+    font-size:1.3rem;
+    color:var(--text-dark);
+    margin:0 0 6px;
+    line-height:1.3;
+  }
+  .event-dates{
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.78rem;
+    letter-spacing:0.06em;
+    color:var(--text-muted);
+    margin:0;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="masthead">
+    <p class="eyebrow">TEAM REGISTRATION</p>
+    <h1>Inter-Territorial Volleyball Tournament</h1>
+  </div>
+
+  <div class="doc">
+    <div class="corner-br"></div><div class="corner-bl"></div>
+
+    <!-- SCREEN 0: Territory -->
+    <div id="startStage">
+      <div class="org-mark">
+        <img id="orgLogo" class="org-logo" src="logo.png" alt="The Salvation Army"
+             onerror="this.style.display='none'; document.getElementById('logoFallback').style.display='flex';">
+        <div id="logoFallback" class="logo-fallback">SA</div>
+        <p class="org-name">THE SALVATION ARMY</p>
+        <h1 class="event-title">Inter-Territorial Volleyball Tournament</h1>
+        <p class="event-dates">NOV 8&ndash;10, 2026</p>
+      </div>
+
+      <div class="divider"></div>
+
+      <p class="step-label">GET STARTED</p>
+      <h2>Set up this team's registration</h2>
+      <p class="subhead">One squad = 9 players, 1 coach, and 1 Territorial Youth Secretary — 11 members total. Players must be born between 1 Nov 1996 and 1 Nov 2011.</p>
+
+      <div class="field">
+        <label>TERRITORY</label>
+        <select id="territorySelect">
+          <option value="">Select a territory</option>
+          <option>India South-Eastern Territory</option>
+          <option>India South-Western Territory</option>
+          <option>India Central Territory</option>
+          <option>India Western Territory</option>
+          <option>India Eastern Territory</option>
+          <option>India Northern Territory</option>
+        </select>
+      </div>
+
+      <button class="btn btn-primary btn-block" id="startBtn">Start team registration</button>
+    </div>
+
+    <!-- SCREEN 1: uploads -->
+    <div id="uploadStage" style="display:none;">
+      <p class="step-label" id="rosterStepLabel">MEMBER 1 OF 11</p>
+      <h2 id="rosterRoleHeading">Player 1</h2>
+      <div class="roster-track" id="rosterTrack"></div>
+      <div class="roster-gallery" id="rosterGallery"></div>
+
+      <div class="upload-block">
+        <h3>ID Card</h3>
+        <p class="upload-hint">Used only to read the date of birth</p>
+        <div class="upload-btn-row">
+          <label class="upload-btn">
+            <span>&#128247; Take Photo</span>
+            <input type="file" id="idCameraInput" accept="image/*" capture="environment">
+          </label>
+          <label class="upload-btn">
+            <span>&#128193; Choose from Gallery</span>
+            <input type="file" id="idGalleryInput" accept="image/*">
+          </label>
+        </div>
+        <div class="thumb-row" id="idThumbRow" style="display:none;">
+          <img id="idThumb" alt="ID card preview">
+          <button class="btn btn-ghost btn-small" id="idRetakeBtn">Change</button>
+        </div>
+      </div>
+
+      <button class="btn btn-primary btn-block" id="continueBtn" disabled>Read date of birth &amp; continue</button>
+
+      <div class="progress-row" id="progressRow">
+        <span id="progressLabel">Reading ID card&hellip;</span>
+        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      </div>
+    </div>
+
+    <!-- SCREEN 2: review -->
+    <div id="reviewStage" style="display:none;">
+      <p class="step-label" id="rosterStepLabel2">MEMBER 1 OF 11</p>
+      <h2 id="rosterRoleHeading2">Confirm Player 1's details</h2>
+      <div class="review-hint" id="reviewHint">Date of birth is read directly from the ID card and can't be edited here. If it looks wrong or wasn't detected, go back and rescan the card.</div>
+
+      <div class="field">
+        <label>NAME</label>
+        <input type="text" id="fieldName" placeholder="Enter full name">
+      </div>
+      <div class="field">
+        <label>DATE OF BIRTH <span class="flag" id="flagDob"></span></label>
+        <div class="static-value" id="fieldDobDisplay">—</div>
+      </div>
+      <div class="field">
+        <label>GENDER <span class="flag" id="flagGender"></span></label>
+        <div class="static-value" id="genderStatic">Male</div>
+        <select id="fieldGenderSelect" style="display:none;">
+          <option value="">Select</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>PHONE NUMBER</label>
+        <input type="text" id="fieldPhone" class="mono" placeholder="10-digit mobile number" inputmode="tel" maxlength="15">
+      </div>
+
+      <button class="btn btn-primary btn-block" id="toAttachBtn">Continue to attachments</button>
+      <button class="btn btn-ghost btn-block" id="backBtn" style="margin-top:8px;">Rescan ID card</button>
+
+      <div class="status" id="statusBox"></div>
+    </div>
+
+    <!-- SCREEN 2b: attachments -->
+    <div id="attachStage" style="display:none;">
+      <p class="step-label" id="rosterStepLabel3">MEMBER 1 OF 11</p>
+      <h2 id="rosterRoleHeading3">Player 1's attachments</h2>
+
+      <div class="upload-block">
+        <h3>Passport-size Photo</h3>
+        <p class="upload-hint">A clear, recent passport-size photo</p>
+        <div class="upload-btn-row">
+          <label class="upload-btn">
+            <span>&#128247; Take Photo</span>
+            <input type="file" id="photoCameraInput" accept="image/*" capture="user">
+          </label>
+          <label class="upload-btn">
+            <span>&#128193; Choose from Gallery</span>
+            <input type="file" id="photoGalleryInput" accept="image/*">
+          </label>
+        </div>
+        <div class="thumb-row" id="photoThumbRow" style="display:none;">
+          <img id="photoThumb" alt="Passport photo preview">
+          <button class="btn btn-ghost btn-small" id="photoRetakeBtn">Change</button>
+        </div>
+      </div>
+
+      <div class="upload-block" id="playerDocsBlock">
+        <h3>Eligibility Documents <span style="text-transform:none; font-weight:400; color:var(--text-muted);">(players only)</span></h3>
+        <p class="upload-hint">All four are required for each player</p>
+
+        <div class="doc-row">
+          <label class="doc-upload-btn">
+            <span>Birth Certificate</span>
+            <input type="file" class="doc-file-input" data-doc="birthCert" accept="image/*,application/pdf">
+          </label>
+        </div>
+        <div class="doc-row">
+          <label class="doc-upload-btn">
+            <span>Copy of Corps Census Roll</span>
+            <input type="file" class="doc-file-input" data-doc="censusRoll" accept="image/*,application/pdf">
+          </label>
+        </div>
+        <div class="doc-row">
+          <label class="doc-upload-btn">
+            <span>Corps Officer Recommendation Letter</span>
+            <input type="file" class="doc-file-input" data-doc="officerLetter" accept="image/*,application/pdf">
+          </label>
+        </div>
+        <div class="doc-row">
+          <label class="doc-upload-btn">
+            <span>Territorial Leaders Authorization Letter</span>
+            <input type="file" class="doc-file-input" data-doc="territorialLetter" accept="image/*,application/pdf">
+          </label>
+        </div>
+      </div>
+
+      <button class="btn btn-primary btn-block" id="submitBtn">Save &amp; continue</button>
+      <button class="btn btn-ghost btn-block" id="backToReviewBtn" style="margin-top:8px;">Back</button>
+
+      <div class="status" id="attachStatusBox"></div>
+    </div>
+
+    <!-- SCREEN 3: roster summary -->
+    <div id="summaryStage" style="display:none;">
+      <p class="step-label">CONFIRM ROSTER</p>
+      <h2>All 11 members registered</h2>
+      <p class="subhead">Each member below is already saved to the sheet. Check the list, then continue to travel details.</p>
+      <div id="rosterSummaryList"></div>
+      <button class="btn btn-primary btn-block" id="confirmRosterBtn" style="margin-top:16px;">Continue to travel details</button>
+    </div>
+
+    <!-- SCREEN 4: travel details -->
+    <div id="travelStage" style="display:none;">
+      <p class="step-label">TRAVEL DETAILS</p>
+      <h2>How is the team travelling?</h2>
+
+      <div class="field">
+        <label>MODE OF TRAVEL</label>
+        <select id="travelModeSelect">
+          <option value="">Select mode of travel</option>
+          <option value="Bus">Bus</option>
+          <option value="Train">Train</option>
+          <option value="Flight">Flight</option>
+        </select>
+      </div>
+
+      <div class="upload-block">
+        <h3>Ticket <span style="text-transform:none; font-weight:400; color:var(--text-muted);">(optional)</span></h3>
+        <label class="drop" id="ticketDropZone">
+          <div class="icon">&#127915;</div>
+          <p><strong>Tap to upload</strong> the ticket or booking confirmation (image or PDF), if available</p>
+          <input type="file" id="ticketFileInput" accept="image/*,application/pdf">
+        </label>
+        <div class="thumb-row" id="ticketThumbRow" style="display:none;">
+          <img id="ticketThumb" alt="Ticket preview">
+          <button class="btn btn-ghost btn-small" id="ticketRetakeBtn">Change</button>
+        </div>
+      </div>
+
+      <button class="btn btn-primary btn-block" id="submitTravelBtn">Submit registration</button>
+      <div class="status" id="travelStatusBox"></div>
+    </div>
+
+    <!-- SCREEN 5: complete -->
+    <div id="completeStage" style="display:none;">
+      <div class="complete-icon">&#127942;</div>
+      <p class="step-label">TEAM COMPLETE</p>
+      <h2>Registration complete</h2>
+      <div class="complete-list">
+        <div>Territory: <b id="summaryTerritory"></b></div>
+        <div>Batch ID: <b id="summaryBatch"></b></div>
+        <div>Members saved: <b>11 / 11</b></div>
+      </div>
+    </div>
+
+  </div>
+
+  <p class="footnote">Processing happens in the browser &mdash; images are only sent to the tournament's registration sheet.<br>Only scan a card and upload a photo with that person's knowledge and consent.</p>
+</div>
+
+<script>
+const ROLES = [
+  'Player 1','Player 2','Player 3','Player 4','Player 5',
+  'Player 6','Player 7','Player 8','Player 9',
+  'Coach','Territorial Youth Secretary'
+];
+
+// Players only: eligible DOB window.
+const DOB_MIN = new Date(1996, 10, 1); // 1 Nov 1996
+const DOB_MAX = new Date(2011, 10, 1); // 1 Nov 2011
+
+// Fixed backend destination — not shown or editable in the UI.
+const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwQNjCKZouYhwbqRzu94aoxO9gKKGZ1NOTEDkY9tozB4-cmsNSFG2BoHsEYbYne6uHZPw/exec';
+
+// ---- Screens ----
+const startStage = document.getElementById('startStage');
+const uploadStage = document.getElementById('uploadStage');
+const reviewStage = document.getElementById('reviewStage');
+const attachStage = document.getElementById('attachStage');
+const summaryStage = document.getElementById('summaryStage');
+const travelStage = document.getElementById('travelStage');
+const completeStage = document.getElementById('completeStage');
+
+// ---- Start screen ----
+const territorySelect = document.getElementById('territorySelect');
+const startBtn = document.getElementById('startBtn');
+
+// ---- Upload screen ----
+const rosterStepLabel = document.getElementById('rosterStepLabel');
+const rosterRoleHeading = document.getElementById('rosterRoleHeading');
+const rosterTrack = document.getElementById('rosterTrack');
+const rosterGallery = document.getElementById('rosterGallery');
+
+const idCameraInput = document.getElementById('idCameraInput');
+const idGalleryInput = document.getElementById('idGalleryInput');
+const idThumbRow = document.getElementById('idThumbRow');
+const idThumb = document.getElementById('idThumb');
+const idRetakeBtn = document.getElementById('idRetakeBtn');
+
+const photoCameraInput = document.getElementById('photoCameraInput');
+const photoGalleryInput = document.getElementById('photoGalleryInput');
+const photoThumbRow = document.getElementById('photoThumbRow');
+const photoThumb = document.getElementById('photoThumb');
+const photoRetakeBtn = document.getElementById('photoRetakeBtn');
+
+const continueBtn = document.getElementById('continueBtn');
+const playerDocsBlock = document.getElementById('playerDocsBlock');
+const progressRow = document.getElementById('progressRow');
+const progressFill = document.getElementById('progressFill');
+const progressLabel = document.getElementById('progressLabel');
+
+// ---- Review screen ----
+const rosterStepLabel2 = document.getElementById('rosterStepLabel2');
+const rosterRoleHeading2 = document.getElementById('rosterRoleHeading2');
+const reviewHint = document.getElementById('reviewHint');
+const fieldName = document.getElementById('fieldName');
+const fieldDobDisplay = document.getElementById('fieldDobDisplay');
+const genderStatic = document.getElementById('genderStatic');
+const fieldGenderSelect = document.getElementById('fieldGenderSelect');
+const flagGender = document.getElementById('flagGender');
+const fieldPhone = document.getElementById('fieldPhone');
+const flagDob = document.getElementById('flagDob');
+const toAttachBtn = document.getElementById('toAttachBtn');
+const backBtn = document.getElementById('backBtn');
+const statusBox = document.getElementById('statusBox');
+
+// ---- Attachments screen ----
+const rosterStepLabel3 = document.getElementById('rosterStepLabel3');
+const rosterRoleHeading3 = document.getElementById('rosterRoleHeading3');
+const submitBtn = document.getElementById('submitBtn');
+const backToReviewBtn = document.getElementById('backToReviewBtn');
+const attachStatusBox = document.getElementById('attachStatusBox');
+
+// ---- Roster summary screen ----
+const rosterSummaryList = document.getElementById('rosterSummaryList');
+const confirmRosterBtn = document.getElementById('confirmRosterBtn');
+
+// ---- Travel screen ----
+const travelModeSelect = document.getElementById('travelModeSelect');
+const ticketDropZone = document.getElementById('ticketDropZone');
+const ticketFileInput = document.getElementById('ticketFileInput');
+const ticketThumbRow = document.getElementById('ticketThumbRow');
+const ticketThumb = document.getElementById('ticketThumb');
+const ticketRetakeBtn = document.getElementById('ticketRetakeBtn');
+const submitTravelBtn = document.getElementById('submitTravelBtn');
+const travelStatusBox = document.getElementById('travelStatusBox');
+
+// ---- Complete screen ----
+const summaryTerritory = document.getElementById('summaryTerritory');
+const summaryBatch = document.getElementById('summaryBatch');
+
+// ---- Session state ----
+let territory = '';
+let batchId = '';
+let memberIndex = 0;
+let idImageDataUrl = null;
+let photoImageDataUrl = null;
+let extractedDob = '';
+let confirmedName = '';
+let confirmedGender = '';
+let confirmedPhone = '';
+let registeredMembers = [];
+let selectedTravelMode = '';
+let ticketFileDataUrl = null;
+let playerDocs = { birthCert: null, censusRoll: null, officerLetter: null, territorialLetter: null };
+const docLabels = {
+  birthCert: 'Birth Certificate',
+  censusRoll: 'Copy of Corps Census Roll',
+  officerLetter: 'Corps Officer Recommendation Letter',
+  territorialLetter: 'Territorial Leaders Authorization Letter'
+};
+
+startBtn.addEventListener('click', () => {
+  territory = territorySelect.value;
+  if (!territory) { alert('Select a territory first.'); return; }
+
+  batchId = territory.replace(/[^A-Z]/gi, '').slice(0, 4).toUpperCase() + '-' + Date.now().toString().slice(-6);
+  memberIndex = 0;
+  startStage.style.display = 'none';
+  showUploadStageForCurrentMember();
+});
+
+function isPlayerRole(role) {
+  return role.startsWith('Player');
+}
+
+function buildRosterTrack() {
+  rosterTrack.innerHTML = '';
+  ROLES.forEach((role, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'roster-dot' + (i < memberIndex ? ' done' : i === memberIndex ? ' current' : '');
+    dot.textContent = i < 9 ? String(i + 1) : (role === 'Coach' ? 'C' : 'T');
+    dot.title = role;
+    rosterTrack.appendChild(dot);
+  });
+  renderRosterGallery();
+}
+
+function renderRosterGallery() {
+  rosterGallery.innerHTML = '';
+  registeredMembers.forEach((m) => {
+    const chip = document.createElement('div');
+    chip.className = 'roster-chip';
+    const photoHtml = m.photoImage
+      ? '<img src="' + m.photoImage + '" alt="' + m.name + '">'
+      : '<div class="chip-photo-empty"></div>';
+    chip.innerHTML = photoHtml + '<span>' + m.name + '</span>';
+    rosterGallery.appendChild(chip);
+  });
+}
+
+function showUploadStageForCurrentMember() {
+  idImageDataUrl = null;
+  photoImageDataUrl = null;
+  idCameraInput.value = '';
+  idGalleryInput.value = '';
+  photoCameraInput.value = '';
+  photoGalleryInput.value = '';
+  idThumbRow.style.display = 'none';
+  photoThumbRow.style.display = 'none';
+  continueBtn.disabled = true;
+  progressRow.style.display = 'none';
+  progressFill.style.width = '0%';
+  resetPlayerDocs();
+
+  const role = ROLES[memberIndex];
+  playerDocsBlock.style.display = isPlayerRole(role) ? 'block' : 'none';
+  rosterStepLabel.textContent = 'MEMBER ' + (memberIndex + 1) + ' OF ' + ROLES.length;
+  rosterRoleHeading.textContent = role;
+  buildRosterTrack();
+
+  uploadStage.style.display = 'block';
+  reviewStage.style.display = 'none';
+  attachStage.style.display = 'none';
+  completeStage.style.display = 'none';
+}
+
+function resetPlayerDocs() {
+  playerDocs = { birthCert: null, censusRoll: null, officerLetter: null, territorialLetter: null };
+  document.querySelectorAll('.doc-file-input').forEach((input) => {
+    input.value = '';
+    const btn = input.closest('.doc-upload-btn');
+    btn.classList.remove('filled');
+  });
+}
+
+function updateContinueButton() {
+  continueBtn.disabled = !idImageDataUrl;
+}
+
+document.querySelectorAll('.doc-file-input').forEach((input) => {
+  input.addEventListener('change', () => {
+    const key = input.dataset.doc;
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      playerDocs[key] = e.target.result;
+      input.closest('.doc-upload-btn').classList.add('filled');
+    };
+    reader.readAsDataURL(file);
+  });
+});
+
+function loadFileAsDataUrl(file, onLoaded) {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => onLoaded(e.target.result);
+  reader.readAsDataURL(file);
+}
+
+function handleIdFileChange(file) {
+  loadFileAsDataUrl(file, (dataUrl) => {
+    idImageDataUrl = dataUrl;
+    idThumb.src = idImageDataUrl;
+    idThumbRow.style.display = 'flex';
+    updateContinueButton();
+  });
+}
+
+idCameraInput.addEventListener('change', () => handleIdFileChange(idCameraInput.files[0]));
+idGalleryInput.addEventListener('change', () => handleIdFileChange(idGalleryInput.files[0]));
+
+idRetakeBtn.addEventListener('click', () => {
+  idCameraInput.value = '';
+  idGalleryInput.value = '';
+  idImageDataUrl = null;
+  idThumbRow.style.display = 'none';
+  updateContinueButton();
+});
+
+function handlePhotoFileChange(file) {
+  loadFileAsDataUrl(file, (dataUrl) => {
+    photoImageDataUrl = dataUrl;
+    photoThumb.src = photoImageDataUrl;
+    photoThumbRow.style.display = 'flex';
+  });
+}
+
+photoCameraInput.addEventListener('change', () => handlePhotoFileChange(photoCameraInput.files[0]));
+photoGalleryInput.addEventListener('change', () => handlePhotoFileChange(photoGalleryInput.files[0]));
+
+photoRetakeBtn.addEventListener('click', () => {
+  photoCameraInput.value = '';
+  photoGalleryInput.value = '';
+  photoImageDataUrl = null;
+  photoThumbRow.style.display = 'none';
+});
+
+continueBtn.addEventListener('click', async () => {
+  continueBtn.disabled = true;
+  progressRow.style.display = 'flex';
+
+  try {
+    const result = await Tesseract.recognize(idImageDataUrl, 'eng', {
+      logger: (m) => {
+        if (m.status === 'recognizing text') {
+          const pct = Math.round(m.progress * 100);
+          progressFill.style.width = pct + '%';
+          progressLabel.textContent = 'Reading ID card… ' + pct + '%';
+        } else {
+          progressLabel.textContent = m.status;
+        }
+      }
+    });
+    const dob = extractDob(result.data.text);
+    populateReview(dob);
+    uploadStage.style.display = 'none';
+    reviewStage.style.display = 'block';
+  } catch (err) {
+    console.error(err);
+    alert('Could not read the ID card. Try a clearer, well-lit photo.');
+    continueBtn.disabled = false;
+  }
+});
+
+function extractDob(fullTextRaw) {
+  const fullText = fullTextRaw.replace(/\n/g, ' | ');
+  const currentYear = new Date().getFullYear();
+  const isValidDate = (d, m, y) => {
+    d = parseInt(d, 10); m = parseInt(m, 10); y = parseInt(y, 10);
+    if (y < 1900 || y > currentYear) return false;
+    if (m < 1 || m > 12) return false;
+    if (d < 1 || d > 31) return false;
+    return true;
+  };
+  const pad = (n) => String(n).padStart(2, '0');
+
+  const labelPattern = /(?:DOB|D0B|D08|DOEB|OOB|Date\s*of\s*Birth|Birth)\D{0,6}(\d{1,2})[\/\-. ](\d{1,2})[\/\-. ](\d{4})/i;
+  let m = fullText.match(labelPattern);
+  if (m && isValidDate(m[1], m[2], m[3])) {
+    return pad(m[1]) + '/' + pad(m[2]) + '/' + m[3];
+  }
+
+  const yobPattern = /(?:YOB|Year\s*of\s*Birth)\D{0,6}(\d{4})/i;
+  m = fullText.match(yobPattern);
+  if (m) {
+    const y = parseInt(m[1], 10);
+    if (y >= 1900 && y <= currentYear) return m[1];
+  }
+
+  const anyDatePattern = /\b(\d{1,2})[\/\-. ](\d{1,2})[\/\-. ](\d{4})\b/g;
+  let match;
+  while ((match = anyDatePattern.exec(fullText)) !== null) {
+    if (isValidDate(match[1], match[2], match[3])) {
+      return pad(match[1]) + '/' + pad(match[2]) + '/' + match[3];
+    }
+  }
+  return '';
+}
+
+function parseDobToDate(dobStr) {
+  // Accepts DD/MM/YYYY or a bare YYYY
+  const full = dobStr.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (full) return new Date(parseInt(full[3], 10), parseInt(full[2], 10) - 1, parseInt(full[1], 10));
+  const yearOnly = dobStr.match(/^(\d{4})$/);
+  if (yearOnly) return new Date(parseInt(yearOnly[1], 10), 0, 1);
+  return null;
+}
+
+function validateDobForCurrentRole(dobStr) {
+  const role = ROLES[memberIndex];
+  if (!isPlayerRole(role)) return { ok: true };
+  if (!dobStr) return { ok: false, message: 'Date of birth is required for players.' };
+  const d = parseDobToDate(dobStr);
+  if (!d) return { ok: false, message: 'Enter the date of birth as DD/MM/YYYY.' };
+  if (d < DOB_MIN || d > DOB_MAX) {
+    return { ok: false, message: 'Players must be born between 1 Nov 1996 and 1 Nov 2011.' };
+  }
+  return { ok: true };
+}
+
+function populateReview(dob) {
+  const role = ROLES[memberIndex];
+  rosterStepLabel2.textContent = 'MEMBER ' + (memberIndex + 1) + ' OF ' + ROLES.length;
+  rosterRoleHeading2.textContent = "Confirm " + role + "'s details";
+
+  extractedDob = dob || '';
+  fieldName.value = '';
+  fieldDobDisplay.textContent = extractedDob || 'Not detected on the card';
+  fieldPhone.value = '';
+
+  if (isPlayerRole(role)) {
+    genderStatic.style.display = 'block';
+    fieldGenderSelect.style.display = 'none';
+    fieldGenderSelect.value = '';
+    flagGender.textContent = '';
+  } else {
+    genderStatic.style.display = 'none';
+    fieldGenderSelect.style.display = 'block';
+    fieldGenderSelect.value = '';
+    flagGender.textContent = '';
+  }
+
+  const dobCheck = validateDobForCurrentRole(extractedDob);
+  if (!extractedDob) {
+    flagDob.textContent = 'not found — rescan the ID card';
+  } else if (!dobCheck.ok) {
+    flagDob.textContent = dobCheck.message;
+  } else {
+    flagDob.textContent = '';
+  }
+  toAttachBtn.disabled = !dobCheck.ok;
+
+  reviewHint.style.display = 'block';
+  statusBox.style.display = 'none';
+  statusBox.className = 'status';
+}
+
+backBtn.addEventListener('click', () => {
+  reviewStage.style.display = 'none';
+  showUploadStageForCurrentMember();
+});
+
+toAttachBtn.addEventListener('click', () => {
+  const role = ROLES[memberIndex];
+  const name = fieldName.value.trim();
+  const dob = extractedDob;
+  const phone = fieldPhone.value.trim();
+  const gender = isPlayerRole(role) ? 'Male' : fieldGenderSelect.value;
+
+  if (!name) { showStatus('err', 'Name is required.'); return; }
+  if (!phone) { showStatus('err', 'Add a phone number.'); return; }
+  if (!gender) { showStatus('err', 'Select a gender.'); return; }
+
+  const dobCheck = validateDobForCurrentRole(dob);
+  if (!dobCheck.ok) { showStatus('err', dobCheck.message); return; }
+
+  confirmedName = name;
+  confirmedGender = gender;
+  confirmedPhone = phone;
+
+  rosterStepLabel3.textContent = 'MEMBER ' + (memberIndex + 1) + ' OF ' + ROLES.length;
+  rosterRoleHeading3.textContent = role + "'s attachments";
+
+  reviewStage.style.display = 'none';
+  attachStage.style.display = 'block';
+  attachStatusBox.style.display = 'none';
+  attachStatusBox.className = 'status';
+});
+
+backToReviewBtn.addEventListener('click', () => {
+  attachStage.style.display = 'none';
+  reviewStage.style.display = 'block';
+});
+
+submitBtn.addEventListener('click', async () => {
+  const role = ROLES[memberIndex];
+
+  if (!photoImageDataUrl) { showAttachStatus('err', 'Attach the passport-size photo before saving.'); return; }
+  if (isPlayerRole(role)) {
+    const docsReady = playerDocs.birthCert && playerDocs.censusRoll && playerDocs.officerLetter && playerDocs.territorialLetter;
+    if (!docsReady) { showAttachStatus('err', 'All four eligibility documents are required for players.'); return; }
+  }
+
+  const payload = {
+    type: 'member',
+    batchId: batchId,
+    territory: territory,
+    role: role,
+    name: confirmedName,
+    dob: extractedDob,
+    gender: confirmedGender,
+    phone: confirmedPhone,
+    idImage: idImageDataUrl || '',
+    photoImage: photoImageDataUrl || '',
+    birthCertificate: playerDocs.birthCert || '',
+    censusRoll: playerDocs.censusRoll || '',
+    officerLetter: playerDocs.officerLetter || '',
+    territorialLetter: playerDocs.territorialLetter || ''
+  };
+
+  submitBtn.disabled = true;
+  showAttachStatus('busy', 'Saving ' + role + '…');
+
+  try {
+    // Apps Script's response often can't be read back cleanly by the browser
+    // even when the save succeeds server-side (a known CORS/redirect quirk).
+    // no-cors avoids that false failure — a completed request is treated as
+    // success, since the script itself has already run by the time it responds.
+    await fetch(WEB_APP_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload)
+    });
+
+    registeredMembers.push({
+      role: role,
+      name: confirmedName,
+      dob: extractedDob,
+      gender: confirmedGender,
+      phone: confirmedPhone,
+      photoImage: photoImageDataUrl || ''
+    });
+    memberIndex++;
+    if (memberIndex >= ROLES.length) {
+      showSummaryStage();
+    } else {
+      showUploadStageForCurrentMember();
+    }
+  } catch (err) {
+    console.error(err);
+    showAttachStatus('err', 'Could not reach the registration sheet. Check your internet connection.');
+  } finally {
+    submitBtn.disabled = false;
+  }
+});
+
+function showAttachStatus(type, message) {
+  attachStatusBox.className = 'status ' + type;
+  attachStatusBox.textContent = message;
+  attachStatusBox.style.display = 'block';
+}
+
+function showSummaryStage() {
+  reviewStage.style.display = 'none';
+  uploadStage.style.display = 'none';
+  attachStage.style.display = 'none';
+  summaryStage.style.display = 'block';
+
+  rosterSummaryList.innerHTML = '';
+  registeredMembers.forEach((m) => {
+    const row = document.createElement('div');
+    row.className = 'roster-row';
+    const photoHtml = m.photoImage
+      ? '<img src="' + m.photoImage + '" alt="' + m.name + '" class="r-photo">'
+      : '<div class="r-photo r-photo-empty"></div>';
+    row.innerHTML =
+      photoHtml +
+      '<div class="r-role">' + m.role + '</div>' +
+      '<div class="r-info">' + m.name +
+      '<span>DOB: ' + (m.dob || '—') + ' &middot; ' + m.gender + ' &middot; ' + m.phone + '</span></div>';
+    rosterSummaryList.appendChild(row);
+  });
+}
+
+confirmRosterBtn.addEventListener('click', () => {
+  summaryStage.style.display = 'none';
+  travelStage.style.display = 'block';
+});
+
+travelModeSelect.addEventListener('change', () => {
+  selectedTravelMode = travelModeSelect.value;
+});
+
+ticketFileInput.addEventListener('change', () => {
+  const file = ticketFileInput.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    ticketFileDataUrl = e.target.result;
+    ticketDropZone.classList.add('filled');
+    if (file.type.startsWith('image/')) {
+      ticketThumb.src = ticketFileDataUrl;
+      ticketThumb.style.display = 'block';
+    } else {
+      ticketThumb.style.display = 'none';
+    }
+    ticketThumbRow.style.display = 'flex';
+  };
+  reader.readAsDataURL(file);
+});
+
+ticketRetakeBtn.addEventListener('click', () => {
+  ticketFileInput.value = '';
+  ticketFileDataUrl = null;
+  ticketThumbRow.style.display = 'none';
+  ticketDropZone.classList.remove('filled');
+});
+
+submitTravelBtn.addEventListener('click', async () => {
+  if (!selectedTravelMode) { showTravelStatus('err', 'Select a mode of travel.'); return; }
+  // Ticket is optional — no check here.
+
+  const payload = {
+    type: 'travel',
+    batchId: batchId,
+    territory: territory,
+    mode: selectedTravelMode,
+    ticketImage: ticketFileDataUrl || ''
+  };
+
+  submitTravelBtn.disabled = true;
+  showTravelStatus('busy', 'Saving travel details…');
+
+  try {
+    await fetch(WEB_APP_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload)
+    });
+    showCompleteStage();
+  } catch (err) {
+    console.error(err);
+    showTravelStatus('err', 'Could not reach the registration sheet. Check your internet connection.');
+  } finally {
+    submitTravelBtn.disabled = false;
+  }
+});
+
+function showTravelStatus(type, message) {
+  travelStatusBox.className = 'status ' + type;
+  travelStatusBox.textContent = message;
+  travelStatusBox.style.display = 'block';
+}
+
+function showCompleteStage() {
+  travelStage.style.display = 'none';
+  completeStage.style.display = 'block';
+  summaryTerritory.textContent = territory;
+  summaryBatch.textContent = batchId;
+}
+
+function showStatus(type, message) {
+  statusBox.className = 'status ' + type;
+  statusBox.textContent = message;
+  statusBox.style.display = 'block';
+}
+</script>
+</body>
+</html>
